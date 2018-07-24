@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>fujinliang.top</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/bootstrap.min.css" />
+    <style>
+        .account {
+            margin-top: 100px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+            <a class="nav-link active" href="#">添加账户</a>
+            </li>
+        </ul>
+        <div id="create" class="account">
+            <p style="font-size: 30px">新建一个账户</p>
+            <p>输入密码</p>
+            <div style="padding: 50px 100px">
+                <input type="text" class="form-control" id="pwd" placeholder="输入密码" />
+            </div>
+            <button type="button" class="btn btn-primary" onclick="createAccount()">创建账户</button>
+        </div>
+
+        <div id="download" class="account" style="display: none" >
+            <p style="font-size: 30px">保存你的<span style="color: red">Keystore</span> 文件</p>
+            <a id="downloadUrl" class="btn btn-success" href="#" role="button">下载 Keystore 文件 (UTC / JSON)</a>
+            <div style="margin-top:100px">
+                <button onclick="showKey()" type="button" class="btn btn-primary">下一步</button>
+            </div>
+        </div>
+
+        <div id="privateKey" class="account" style="display: none">
+            <p style="font-size: 30px">保存你的<span style="color: red">私钥</span></p>
+            <textarea class="form-control" id="prikey" rows="3" disabled></textarea>
+        </div>
+      </div>
+</body>
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script>
+    function createAccount(){
+
+        var pwd = $("#pwd").val()
+        if (pwd == "") {
+            alert("密码不能为空！");
+            return
+        }
+
+        $.post("/account/create","pwd="+pwd, function(result){
+            alert(result.data)
+            if (result.code == 0) {
+                $("#create").hide()
+                $("#download").show()
+                $("#downloadUrl").attr("href", result.data.keystore)
+                alert(result.data.privateKey)
+                $("#prikey").html(result.data.privateKey)
+            }
+        })
+    }
+
+    function showKey(){
+        $("#download").hide()
+        $("#privateKey").show()
+    }
+</script>
+</html>
